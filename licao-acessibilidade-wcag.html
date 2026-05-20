@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lição de Acessibilidade — Violações WCAG POUR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Courier+Prime&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f0ead0;
+      --beige: #e8e0c0;
+      --tan: #d4c97a;
+      --brown: #5c4a1e;
+      --dark: #2c2416;
+      --muted: #c8c2a0;
+      --red-tag: #7c1d1d;
+      --green: #1a4d2e;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f0e8;
+      color: #1a1a1a;
+    }
+
+    /* ─── BANNER DIDÁTICO ─── */
+    .lesson-banner {
+      background: var(--dark);
+      color: #f0e8c0;
+      font-family: 'Courier Prime', monospace;
+      font-size: 13px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .lesson-banner strong { color: #f5c842; font-size: 14px; }
+    .lesson-banner .pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      background: rgba(245,200,66,0.15);
+      border: 1px solid rgba(245,200,66,0.4);
+      color: #f5c842;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ─── PROTÓTIPO ─── */
+    .prototype {
+      max-width: 860px;
+      margin: 0 auto;
+      border: 2px dashed #aaa099;
+      border-top: none;
+    }
+
+    /* HEADER */
+    .site-header {
+      background: #c8c2a0;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-circle {
+      width: 42px; height: 42px;
+      background: var(--tan);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      border: 2px solid #bbb;
+      flex-shrink: 0;
+    }
+    .site-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--dark);
+      flex: 1;
+    }
+    nav { display: flex; gap: 10px; }
+    /* ❌ VIOLAÇÃO P1 — contraste: texto #c8c2a0 sobre fundo #bfb98c ≈ 1.3:1 */
+    .nav-link {
+      color: #c8c2a0;
+      background: #bfb98c;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--beige);
+      padding: 28px 24px 20px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .hero-content { flex: 1; }
+    /* ❌ VIOLAÇÃO P1 — contraste: #d4c97a (amarelo) sobre #e8e0c0 (bege) ≈ 1.4:1 */
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: #d4c97a;
+      margin-bottom: 10px;
+    }
+    /* ❌ VIOLAÇÃO P1 — contraste: #c9c3a4 sobre #e8e0c0 ≈ 1.2:1 */
+    .hero-sub {
+      color: #c9c3a4;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    /* ❌ VIOLAÇÃO O1 — botão com área de toque ~14×20px (mínimo WCAG: 44×44px) */
+    /* ❌ VIOLAÇÃO O2 — outline removido, sem indicador de foco visível */
+    .cta-btn {
+      background: var(--brown);
+      color: #f5f0dc;
+      font-size: 10px;
+      padding: 3px 8px;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      outline: none;
+      font-family: 'Courier Prime', monospace;
+      letter-spacing: 0.05em;
+    }
+    .cta-btn:focus { outline: none; box-shadow: none; }
+    .hero-img {
+      width: 90px; height: 90px;
+      background: #c8b86a;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      flex-shrink: 0;
+      /* ❌ VIOLAÇÃO P1 — sem atributo alt (img decorativa não descrita) */
+    }
+
+    /* CARROSSEL */
+    .carousel-wrap {
+      background: #e4ddb8;
+      padding: 10px 20px 12px;
+    }
+    .carousel-label {
+      font-size: 10px;
+      color: #8a7a50;
+      margin-bottom: 6px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    /* ❌ VIOLAÇÃO P2 — animação sem controle de pausa (WCAG 2.2.2) */
+    .carousel {
+      overflow: hidden;
+      height: 42px;
+      background: #dfd8b5;
+      border-radius: 4px;
+    }
+    .carousel-inner {
+      display: flex;
+      animation: scroll-x 7s linear infinite;
+      white-space: nowrap;
+    }
+    /* ❌ VIOLAÇÃO P1 — contraste texto #c8c2a0 sobre #dfd8b5 ≈ 1.2:1 */
+    .carousel-item {
+      padding: 12px 36px;
+      font-size: 12px;
+      color: #c8c2a0;
+      flex-shrink: 0;
+      font-family: 'Courier Prime', monospace;
+    }
+    @keyframes scroll-x {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* SEÇÃO FORM */
+    .section {
+      background: var(--cream);
+      padding: 20px 24px 24px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: #6b6040;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 0.5px solid #c0b98a;
+    }
+
+    /* ❌ VIOLAÇÃO C1 — CAPTCHA ilegível, sem alternativa em áudio ou lógica alternativa */
+    .captcha-box {
+      background: #ddd5b0;
+      border: 1px solid #b0a87a;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .captcha-label {
+      font-size: 11px;
+      color: #7a7060;
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .captcha-img {
+      display: block;
+      width: 220px;
+      height: 58px;
+      margin: 0 auto 10px;
+      background: repeating-linear-gradient(
+        45deg, #8a7a4a 0px, #8a7a4a 4px,
+        #c0ae70 4px, #c0ae70 8px
+      );
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      filter: contrast(1.9) blur(0.7px);
+    }
+    .captcha-text {
+      position: absolute;
+      top: 12px; left: 18px;
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      /* ❌ VIOLAÇÃO C1 — texto com opacidade 20%, ilegível mesmo para videntes */
+      color: rgba(245, 235, 170, 0.20);
+      letter-spacing: 12px;
+      transform: skewX(-22deg) skewY(6deg);
+      user-select: none;
+    }
+
+    /* ❌ VIOLAÇÃO C2 — inputs sem <label> associado */
+    /* ❌ VIOLAÇÃO O2 — sem foco visível em nenhum input */
+    .form-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    .form-input {
+      flex: 1;
+      min-width: 120px;
+      padding: 6px 10px;
+      font-size: 13px;
+      border: 0.5px solid #b0a87a;
+      border-radius: 4px;
+      background: #f8f4e0;
+      color: #3a3020;
+      outline: none;
+      font-family: 'Courier Prime', monospace;
+    }
+    .form-input:focus { outline: none; border-color: #b0a87a; }
+    .submit-btn {
+      background: #7a6830;
+      color: #f5f0dc;
+      font-size: 12px;
+      padding: 6px 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      outline: none;
+      font-family: 'Courier Prime', monospace;
+    }
+    .submit-btn:focus { outline: none; }
+    /* ❌ VIOLAÇÃO C3 — campos obrigatórios não sinalizados; sem mensagem de erro */
+    .form-note {
+      font-size: 10px;
+      color: #9a9070;
+      margin-top: 6px;
+    }
+
+    /* FOOTER */
+    /* ❌ VIOLAÇÃO P1 — contraste #b8b298 sobre #c8c2a0 ≈ 1.1:1 */
+    .site-footer {
+      background: #c8c2a0;
+      padding: 10px 20px;
+      font-size: 10px;
+      color: #b8b298;
+      text-align: center;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* ─── ANOTAÇÕES DIDÁTICAS ─── */
+    .annotation {
+      display: inline-block;
+      font-size: 9px;
+      background: rgba(124,29,29,0.10);
+      color: #7c1d1d;
+      border: 0.5px solid #c06060;
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+      font-family: 'Courier Prime', monospace;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    /* ─── LEGENDA / PAINEL EXPLICATIVO ─── */
+    .explainer {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .explainer h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .explainer > p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .pour-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .pour-card {
+      background: #fff;
+      border-radius: 10px;
+      border: 0.5px solid #ddd;
+      overflow: hidden;
+    }
+    .pour-card-header {
+      padding: 14px 16px 10px;
+      border-bottom: 0.5px solid #eee;
+    }
+    .pour-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .pour-name {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888;
+      margin-top: 2px;
+    }
+    .pour-card-body { padding: 12px 16px 16px; }
+    .violation-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .violation-item:last-child { margin-bottom: 0; }
+    .v-icon {
+      font-size: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .v-text { font-size: 13px; color: #333; line-height: 1.5; }
+    .v-text strong { color: #7c1d1d; font-size: 12px; display: block; margin-bottom: 2px; }
+    .v-criterion {
+      font-size: 10px;
+      color: #999;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* cards por princípio */
+    .pour-card:nth-child(1) .pour-letter { color: #b34a00; }
+    .pour-card:nth-child(1) .pour-card-header { background: #fff6f0; }
+    .pour-card:nth-child(2) .pour-letter { color: #1a4d8a; }
+    .pour-card:nth-child(2) .pour-card-header { background: #f0f4ff; }
+    .pour-card:nth-child(3) .pour-letter { color: #1a6b3a; }
+    .pour-card:nth-child(3) .pour-card-header { background: #f0fff4; }
+
+    /* tabela de correções */
+    .fix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 0.5px solid #ddd;
+    }
+    .fix-table th {
+      background: #2c2416;
+      color: #f0e8c0;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .fix-table td {
+      padding: 9px 14px;
+      border-bottom: 0.5px solid #eee;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .fix-table tr:last-child td { border-bottom: none; }
+    .fix-table tr:nth-child(even) td { background: #faf8f2; }
+    .fix-bad { color: #7c1d1d; font-family: 'Courier Prime', monospace; font-size: 12px; }
+    .fix-good { color: #1a4d2e; font-family: 'Courier Prime', monospace; font-size: 12px; }
+
+    .resources {
+      background: #fff;
+      border-radius: 10px;
+      border: 0.5px solid #ddd;
+      padding: 18px 20px;
+      margin-top: 20px;
+    }
+    .resources h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .resource-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .resource-links a {
+      font-size: 13px;
+      color: #1a4d8a;
+      text-decoration: none;
+      background: #f0f4ff;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 0.5px solid #b0c0e0;
+    }
+    .resource-links a:hover { background: #dbe4ff; }
+
+    .footer-page {
+      text-align: center;
+      padding: 20px;
+      font-size: 11px;
+      color: #aaa;
+      font-family: 'Courier Prime', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── BANNER DIDÁTICO ─── -->
+<div class="lesson-banner">
+  <div>
+    <strong>⚠ Protótipo Didático — Acessibilidade Web</strong><br>
+    Este site viola intencionalmente os princípios WCAG para fins de aprendizado
+  </div>
+  <div class="pills">
+    <span class="pill">❌ Perceptível</span>
+    <span class="pill">❌ Operável</span>
+    <span class="pill">❌ Compreensível</span>
+  </div>
+</div>
+
+<!-- ─── PROTÓTIPO INACESSÍVEL ─── -->
+<div class="prototype" role="region" aria-label="Protótipo com violações intencionais de acessibilidade">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <!-- ❌ P1: logo sem texto alternativo (role="img" sem aria-label) -->
+    <div class="logo-circle" role="img">🏛</div>
+    <span class="site-name">Antiquário Silva</span>
+    <nav aria-label="Menu principal">
+      <!-- ❌ P1: texto dos links é invisível (contraste ~1.3:1) -->
+      <a href="#" class="nav-link">Início</a>
+      <a href="#" class="nav-link">Catálogo <span class="annotation">❌ P — contraste 1.3:1</span></a>
+      <a href="#" class="nav-link">Contato</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <!-- ❌ P1: amarelo sobre bege, contraste ≈ 1.4:1 (mín. WCAG: 4.5:1) -->
+      <h1 class="hero-title">Bem-vindo ao Antiquário <span class="annotation">❌ P — contraste 1.4:1</span></h1>
+      <!-- ❌ P1: texto praticamente invisível -->
+      <p class="hero-sub">Peças únicas de valor histórico inestimável desde 1987 — sua fonte de raridades autênticas e colecionáveis exclusivos. <span class="annotation">❌ P — contraste 1.2:1</span></p>
+      <!-- ❌ O1: área de clique ~14×20px; mínimo WCAG 2.5.5 = 44×44px -->
+      <!-- ❌ O2: outline removido, sem foco visível -->
+      <button class="cta-btn">ver catálogo</button>
+      <span class="annotation">❌ O — alvo 14×20px · sem foco</span>
+    </div>
+    <!-- ❌ P1: imagem decorativa sem atributo alt -->
+    <div class="hero-img" title="vaso decorativo">🏺</div>
+  </section>
+
+  <!-- CARROSSEL SEM PAUSA -->
+  <div class="carousel-wrap">
+    <div class="carousel-label">Novidades em destaque <span class="annotation">❌ P — animação sem pausa</span></div>
+    <!-- ❌ P2: animação perpétua sem botão de pause/stop (WCAG 2.2.2) -->
+    <div class="carousel" aria-hidden="true">
+      <div class="carousel-inner">
+        <span class="carousel-item">Vaso Ming • Século XV • R$ 48.000</span>
+        <span class="carousel-item">Relógio Francês • 1820 • R$ 12.500</span>
+        <span class="carousel-item">Mapa Holandês • 1680 • R$ 32.000</span>
+        <span class="carousel-item">Escultura Etrusca • Séc. VI a.C. • R$ 95.000</span>
+        <span class="carousel-item">Vaso Ming • Século XV • R$ 48.000</span>
+        <span class="carousel-item">Relógio Francês • 1820 • R$ 12.500</span>
+        <span class="carousel-item">Mapa Holandês • 1680 • R$ 32.000</span>
+        <span class="carousel-item">Escultura Etrusca • Séc. VI a.C. • R$ 95.000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <section class="section">
+    <h2 class="section-title">Faça sua consulta</h2>
+
+    <!-- ❌ C1: CAPTCHA ilegível, sem alternativa em áudio ou método acessível -->
+    <div class="captcha-box">
+      <!-- ❌ C2: sem <label> associado ao input; sem instrução alternativa -->
+      <span class="captcha-label">
+        Digite os caracteres da imagem abaixo:
+        <span class="annotation">❌ C — captcha ilegível + sem alt.</span>
+      </span>
+      <div class="captcha-img" role="img" aria-label="">
+        <!-- ❌ C1: texto com opacidade 20%, distorcido e ilegível -->
+        <span class="captcha-text" aria-hidden="true">X7kP2</span>
+      </div>
+      <!-- ❌ O2: sem foco visível; ❌ C2: sem <label> -->
+      <div class="form-row">
+        <input class="form-input" type="text" placeholder="captcha..." />
+        <span class="annotation">❌ C — sem &lt;label&gt;</span>
+      </div>
+    </div>
+
+    <!-- ❌ C2: inputs sem label; ❌ O2: sem foco; ❌ C3: sem indicação de obrigatório -->
+    <div class="form-row">
+      <input class="form-input" type="text" placeholder="seu nome" />
+      <input class="form-input" type="email" placeholder="e-mail" />
+    </div>
+    <div class="form-row">
+      <input class="form-input" type="text" placeholder="mensagem..." style="flex:2;" />
+      <button class="submit-btn">Enviar</button>
+    </div>
+    <!-- ❌ C3: ausência de feedback de erro e indicação de obrigatoriedade -->
+    <p class="form-note">* Nenhum campo está identificado como obrigatório. Nenhum feedback de erro é fornecido ao enviar. <span class="annotation">❌ C — sem mensagem de erro</span></p>
+  </section>
+
+  <footer class="site-footer">
+    <!-- ❌ P1: contraste #b8b298 sobre #c8c2a0 ≈ 1.1:1 -->
+    © 2024 Antiquário Silva Ltda. — Todos os direitos reservados — CNPJ 00.000.000/0001-00 — São Paulo, SP
+    <span class="annotation">❌ P — contraste 1.1:1</span>
+  </footer>
+
+</div><!-- fim .prototype -->
+
+<!-- ─── PAINEL EXPLICATIVO ─── -->
+<div class="explainer">
+  <h2>Princípios POUR violados — análise detalhada</h2>
+  <p>O protótipo acima foi construído para violar intencionalmente três dos quatro princípios POUR das WCAG. Cada violação está sinalizada com uma etiqueta vermelha. Veja abaixo o que foi violado e por quê isso prejudica usuários reais.</p>
+
+  <div class="pour-grid">
+
+    <!-- P — PERCEPTÍVEL -->
+    <div class="pour-card">
+      <div class="pour-card-header">
+        <div class="pour-letter">P</div>
+        <div class="pour-name">Perceptível · Perceivable</div>
+      </div>
+      <div class="pour-card-body">
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Contraste de texto insuficiente</strong>
+            Título hero em amarelo (#d4c97a) sobre bege (#e8e0c0) gera razão de contraste ≈ 1.4:1. Links de navegação e texto do carrossel chegam a 1.1:1. O mínimo exigido é 4.5:1 para texto normal e 3:1 para texto grande.
+            <span class="v-criterion">WCAG 1.4.3 — Contrast (Minimum) · Nível AA</span>
+          </div>
+        </div>
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Imagens sem texto alternativo</strong>
+            O ícone de logo e a ilustração do vaso não possuem atributo alt descritivo. Leitores de tela ignoram ou lêem o nome do arquivo, tornando o conteúdo invisível para pessoas cegas.
+            <span class="v-criterion">WCAG 1.1.1 — Non-text Content · Nível A</span>
+          </div>
+        </div>
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Animação sem controle de pausa</strong>
+            O carrossel de produtos rola indefinidamente sem botão de pause/stop. Pode causar crises em pessoas com epilepsia fotossensível ou distúrbios vestibulares, além de distrair usuários com TDAH.
+            <span class="v-criterion">WCAG 2.2.2 — Pause, Stop, Hide · Nível A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- O — OPERÁVEL -->
+    <div class="pour-card">
+      <div class="pour-card-header">
+        <div class="pour-letter">O</div>
+        <div class="pour-name">Operável · Operable</div>
+      </div>
+      <div class="pour-card-body">
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Área de toque/clique minúscula</strong>
+            O botão "ver catálogo" tem aproximadamente 14×20px. Pessoas com tremor, Parkinson ou coordenação motora reduzida têm enorme dificuldade em acertá-lo. O mínimo recomendado é 44×44px.
+            <span class="v-criterion">WCAG 2.5.5 — Target Size · Nível AAA</span>
+          </div>
+        </div>
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Foco de teclado removido</strong>
+            Todos os elementos interativos têm outline: none sem substituto visual. Usuários que navegam exclusivamente por teclado ficam completamente perdidos — impossível saber onde o foco se encontra.
+            <span class="v-criterion">WCAG 2.4.7 — Focus Visible · Nível AA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C — COMPREENSÍVEL -->
+    <div class="pour-card">
+      <div class="pour-card-header">
+        <div class="pour-letter">C</div>
+        <div class="pour-name">Compreensível · Understandable</div>
+      </div>
+      <div class="pour-card-body">
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>CAPTCHA ilegível sem alternativa</strong>
+            Padrão listrado de alto ruído + texto com opacidade 20% torna a leitura impossível mesmo para pessoas sem deficiência visual. Não há alternativa em áudio nem método alternativo de verificação.
+            <span class="v-criterion">WCAG 1.1.1 + Nota sobre CAPTCHA · Nível A</span>
+          </div>
+        </div>
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Campos sem &lt;label&gt; associado</strong>
+            Nenhum input possui rótulo vinculado via label for="" ou aria-label. Leitores de tela não conseguem descrever o propósito do campo — a pessoa não sabe o que está preenchendo.
+            <span class="v-criterion">WCAG 1.3.1 — Info and Relationships · Nível A</span>
+          </div>
+        </div>
+        <div class="violation-item">
+          <span class="v-icon">❌</span>
+          <div class="v-text">
+            <strong>Sem indicação de erros ou obrigatoriedade</strong>
+            Campos obrigatórios não são identificados visualmente ou semanticamente (aria-required). Ao enviar com erros, nenhuma mensagem de feedback é exibida.
+            <span class="v-criterion">WCAG 3.3.1 — Error Identification · Nível A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABELA DE CORREÇÕES -->
+  <h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:12px;">Como corrigir cada violação</h2>
+  <table class="fix-table">
+    <thead>
+      <tr>
+        <th style="width:20%">Princípio</th>
+        <th style="width:30%">Violação</th>
+        <th style="width:50%">Correção</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>P — Perceptível</strong></td>
+        <td class="fix-bad">Contraste insuficiente (1.4:1)</td>
+        <td class="fix-good">Usar combinações com razão ≥ 4.5:1 — verificar em webaim.org/resources/contrastchecker</td>
+      </tr>
+      <tr>
+        <td><strong>P — Perceptível</strong></td>
+        <td class="fix-bad">Imagem sem alt</td>
+        <td class="fix-good">&lt;img alt="Logotipo Antiquário Silva"&gt; ou alt="" para decorativas</td>
+      </tr>
+      <tr>
+        <td><strong>P — Perceptível</strong></td>
+        <td class="fix-bad">Animação sem pausa</td>
+        <td class="fix-good">Botão pause/stop; respeitar @media (prefers-reduced-motion: reduce)</td>
+      </tr>
+      <tr>
+        <td><strong>O — Operável</strong></td>
+        <td class="fix-bad">Botão 14×20px</td>
+        <td class="fix-good">Mínimo 44×44px de área de toque; padding adequado no elemento</td>
+      </tr>
+      <tr>
+        <td><strong>O — Operável</strong></td>
+        <td class="fix-bad">outline: none sem substituto</td>
+        <td class="fix-good">Nunca remover outline sem criar :focus-visible com box-shadow ou borda equivalente</td>
+      </tr>
+      <tr>
+        <td><strong>C — Compreensível</strong></td>
+        <td class="fix-bad">CAPTCHA ilegível</td>
+        <td class="fix-good">Alternativa em áudio; hCaptcha acessível; desafio lógico alternativo</td>
+      </tr>
+      <tr>
+        <td><strong>C — Compreensível</strong></td>
+        <td class="fix-bad">Campos sem &lt;label&gt;</td>
+        <td class="fix-good">&lt;label for="nome"&gt;Seu nome&lt;/label&gt; &lt;input id="nome"&gt; ou aria-label="..."</td>
+      </tr>
+      <tr>
+        <td><strong>C — Compreensível</strong></td>
+        <td class="fix-bad">Sem feedback de erro</td>
+        <td class="fix-good">aria-required="true"; aria-live="polite" com mensagem de erro; role="alert"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- RECURSOS -->
+  <div class="resources">
+    <h3>📚 Recursos para aprofundamento</h3>
+    <div class="resource-links">
+      <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener">WCAG 2.2 — W3C</a>
+      <a href="https://webaim.org" target="_blank" rel="noopener">WebAIM</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility" target="_blank" rel="noopener">MDN Accessibility</a>
+      <a href="https://www.a11yproject.com" target="_blank" rel="noopener">The A11Y Project</a>
+      <a href="https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital/emag" target="_blank" rel="noopener">ABNT NBR 17060 / eMAG</a>
+      <a href="https://webaim.org/resources/contrastchecker/" target="_blank" rel="noopener">Verificador de Contraste</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-page">
+  Protótipo didático criado para estudo de acessibilidade web — WCAG 2.2 · Princípios POUR<br>
+  Nenhuma das violações aqui presentes deve ser replicada em projetos reais.
+</div>
+
+</body>
+</html>
